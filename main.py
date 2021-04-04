@@ -13,9 +13,11 @@ from lib import config
 from lib.network import mserver
 
 config = config.JsonConfig('./config.json')
-log = logging.getLogger(__name__)
 SERVER_ADDRESS = (HOST, PORT) = '', config.value['mservice']['port']
 REQUEST_QUEUE_SIZE = 1
+
+log = logging.getLogger(__name__)
+logging.basicConfig(level='DEBUG')
 
 
 def handle_request(client):
@@ -54,7 +56,7 @@ def handle_request(client):
                                                       body=user_token)
                 else:
                     result = request.make_answer_json(answer_code=request.answer_codes['login_failed'],
-                                                      body='token invalid')
+                                                      body='auth token invalid')
             else:
                 result = request.make_answer_json(answer_code=request.answer_codes['failed'],
                                                   body='request format error')
@@ -65,7 +67,7 @@ def handle_request(client):
 
         # send answer to request
         result = json.dumps(result)
-        resp = str(result).encode('utf-8')
+        resp = result.encode('utf-8')
         client.send(resp)
 
     log.info("Closed connection")
