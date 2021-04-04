@@ -8,7 +8,7 @@ import os
 import json
 
 from lib.network import request
-from lib.db import database
+from lib.db import echo
 from lib import config
 from lib.network import mserver
 
@@ -48,7 +48,7 @@ def handle_request(client):
             #                 }
             elif request_json['request'] == 'auth' and 'body' in request_json:
                 # print(request_json)
-                user_token = db.check_user_token(user_token=request_json['body'])
+                user_token = ldb.check_user_token(token=request_json['body'])
                 if user_token:
                     result = request.make_answer_json(answer_code=request.answer_codes['success'],
                                                       body=user_token)
@@ -73,6 +73,8 @@ def handle_request(client):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level='DEBUG')
-    db = database.Database()
+    ldb = echo.EchoDB(db_host=config.value['db']['host'],
+                      db_name=config.value['db']['db_name'],
+                      db_user=config.value['db']['db_user'],
+                      db_pass=config.value['db']['db_pass'])
     mserver.micro_server(SERVER_ADDRESS, handle_request)
