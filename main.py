@@ -7,10 +7,12 @@ import logging
 import os
 import json
 
-from lib.network import request
+from lib.routes import r_map
+from lib.network import net_request
 from lib.db import echo
 from lib import config
 from lib.network import mserver
+import f_modules
 
 config = config.JsonConfig('./config.json')
 SERVER_ADDRESS = (HOST, PORT) = '', config.value['mservice']['port']
@@ -38,32 +40,14 @@ def handle_request(client):
         # print('ok')
         request_json = json.loads(request_obj.decode('utf-8'))
         # print(request_json)
-
-        if 'request' in request_json:  # check request object exist
-            # TEST
-            if request_json['request'] == 'test':
-                result = request.make_answer_json(answer_code=request.answer_codes['success'],
-                                                  body='ping: ok')
-            # USER TOKEN CHECK REQUEST
-            # request_json = {'request': 'auth',
-            #                 'value': 'aaaa-bbbb-cccc-dddd'
-            #                 }
-            elif request_json['request'] == 'auth' and 'body' in request_json:
-                # print(request_json)
-                user_token = ldb.check_user_token(token=request_json['body'])
-                if user_token:
-                    result = request.make_answer_json(answer_code=request.answer_codes['success'],
-                                                      body=user_token)
-                else:
-                    result = request.make_answer_json(answer_code=request.answer_codes['login_failed'],
-                                                      body='auth token invalid')
-            else:
-                result = request.make_answer_json(answer_code=request.answer_codes['failed'],
-                                                  body='request format error')
+        route_function = r_map.search_route(input_dictionary=request_json,
+                                            routes=f_modules.routes,
+                                            request_schemas=f_modules.schemas)
+        if route_function:
+            result = route_function(request_json, ldb)
         else:
-            # fail
-            result = request.make_answer_json(answer_code=request.answer_codes['failed'],
-                                              body='no request header')
+            result = net_request.make_answer_json(answer_code=net_request.answer_codes['failed'],
+                                                  body='request format error')
 
         # send answer to request
         result = json.dumps(result)
