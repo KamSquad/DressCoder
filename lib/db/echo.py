@@ -12,7 +12,7 @@ class EchoDB(dbm.DatabaseInstance):
             # prepare result
             user_role_res_dict = dbm.make_dict_result(user_role_res)
             # remove token field
-            del user_role_res_dict['body']['token']
+            del user_role_res_dict['token']
             # return
             return user_role_res_dict
         except NoResultFound:
