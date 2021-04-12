@@ -9,7 +9,13 @@ from sqlalchemy import create_engine
 
 from lib import config
 
-conf = config.JsonConfig('./config.json')
+try:
+    # normal config reading
+    conf = config.JsonConfig('./config.json')
+except:
+    # config reading for tests
+    conf = config.JsonConfig('../config.json')
+
 db_host = conf.value['db']['host']
 db_name = conf.value['db']['db_name']
 db_user = conf.value['db']['db_user']
