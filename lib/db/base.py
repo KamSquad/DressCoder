@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from lib.db.setup import Base, UserRole, UserAuth, UserSalt, UserLogin, UserInfo
+from lib.db.setup import Base, UserRole, UserAuth, UserSalt, UserLogin, UserInfo, TokenPerm
 
 
 class DatabaseInstance:
@@ -16,3 +16,9 @@ class DatabaseInstance:
         # и представляет «промежуточную зону» для всех объектов,
         # загруженных в объект сессии базы данных.
         self.session = db_session()
+
+
+def make_dict_result(result):
+    json_res = result.__dict__
+    del json_res['_sa_instance_state']
+    return json_res
