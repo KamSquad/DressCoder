@@ -11,6 +11,9 @@ class EchoDB(dbm.DatabaseInstance):
                 token=token).one()
             # prepare result
             user_role_res_dict = dbm.make_dict_result(user_role_res)
+            # remove token field
+            del user_role_res_dict['body']['token']
+            # return
             return user_role_res_dict
         except NoResultFound:
             return None
