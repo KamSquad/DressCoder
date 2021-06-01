@@ -113,8 +113,8 @@ class TokenPerm(Base):
     p_edit_news = Column(Boolean, nullable=True)
 
 
-# create engine instance
-engine = create_engine(f'postgresql+psycopg2://{db_user}:{db_pass}@{db_host}/{db_name}')
-
-# create metadata for engine
-Base.metadata.create_all(engine)
+if __name__ == '__main__':
+    # create engine instance
+    engine = create_engine(f'postgresql+psycopg2://{db_user}:{db_pass}@{db_host}/{db_name}')
+    # create metadata for engine
+    Base.metadata.create_all(engine)
