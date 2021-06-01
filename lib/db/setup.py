@@ -9,17 +9,11 @@ from sqlalchemy import create_engine
 
 from lib import config
 
-try:
-    # normal config reading
-    conf = config.JsonConfig('./config.json')
-except:
-    # config reading for tests
-    conf = config.JsonConfig('../config.json')
-
-db_host = conf.value['db']['host']
-db_name = conf.value['db']['db_name']
-db_user = conf.value['db']['db_user']
-db_pass = conf.value['db']['db_pass']
+conf = config.EnvConfig()
+db_host = conf.get('DB_HOST')
+db_name = conf.get('DB_NAME')
+db_user = conf.get('DB_USER')
+db_pass = conf.get('DB_PASS')
 
 # declare declarative base
 Base = declarative_base()

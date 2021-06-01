@@ -14,8 +14,8 @@ from lib import config
 from lib.network import mserver
 import f_modules
 
-config = config.JsonConfig('./config.json')
-SERVER_ADDRESS = (HOST, PORT) = '', config.value['mservice']['port']
+config = config.EnvConfig()  # config.JsonConfig('./config.json')
+SERVER_ADDRESS = (HOST, PORT) = '', config.m_ports.auth
 REQUEST_QUEUE_SIZE = 1
 
 log = logging.getLogger(__name__)
@@ -59,8 +59,8 @@ def handle_request(client):
 
 
 if __name__ == '__main__':
-    ldb = echo.EchoDB(db_host=config.value['db']['host'],
-                      db_name=config.value['db']['db_name'],
-                      db_user=config.value['db']['db_user'],
-                      db_pass=config.value['db']['db_pass'])
+    ldb = echo.EchoDB(db_host=config.get('DB_HOST'),
+                      db_name=config.get('DB_NAME'),
+                      db_user=config.get('DB_USER'),
+                      db_pass=config.get('DB_PASS'))
     mserver.micro_server(SERVER_ADDRESS, handle_request)
