@@ -1,28 +1,33 @@
-from json import dumps, load
+import os
+from collections import namedtuple
+from dotenv import load_dotenv
+from pprint import pprint
 
 
-class JsonConfig:
-    def __init__(self, file):
+class EnvConfig:
+    def __init__(self):
         """
-        Json input arguments parser
-        :param file: input file path to input file
+        Get environment variables
         """
-        # self.param = {'notify': None}
-        self.value = {**load(open(file, "r"))['config']}
+        try:
+            load_dotenv('.env')
+        except:
+            load_dotenv('../.env')
 
-    def print_config(self):
-        """
-        Print input arguments
-        """
-        out_dump = dumps(self.value,
-                         indent=4,
-                         sort_keys=True)
-        out_dump = out_dump.replace(',', '')
-        out_dump = out_dump.replace('{', '').replace('}', '')
-        out_dump = out_dump.replace('[', '').replace(']', '')
-        print('Config loaded:\n{config}'.format(config=out_dump))
+        self.m_ports = namedtuple('m_ports', 'auth')
+        self.m_ports.auth = int(os.environ.get("M_PORT_AUTH", default=2289))
 
+    @staticmethod
+    def get(name: str) -> str:
+        return os.environ.get(name)
 
-if __name__ == '__main__':
-    conf = JsonConfig('./../config/example/config.json')
-    conf.print_config()
+    def print_params(self) -> pprint:
+        params = [self.m_ports]
+        for param in params:
+            new_param = {}
+            param_dict = dict(vars(param))
+            for value in param_dict:
+                # print()
+                if not value.startswith('_'):
+                    new_param[value] = param_dict[value]
+            pprint(new_param)
