@@ -1,6 +1,7 @@
 from schema import Schema, And, Use
 
 from lib.network import net_request
+from lib.enc import creds
 
 
 def test_func(*args):
@@ -27,6 +28,6 @@ routes = {'test': test_func,
 
 schemas = {'test': Schema({'request': 'test'}),
            'auth': Schema({'request': 'auth',
-                           'body': And(Use(str))
+                           'body': And(Use(str, lambda s: creds.check_uid(s)))
                            })
            }
