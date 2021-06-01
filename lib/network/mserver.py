@@ -2,7 +2,7 @@ import os
 import signal
 import socket
 
-from main import REQUEST_QUEUE_SIZE, log
+from DressCoder import REQUEST_QUEUE_SIZE, log
 
 
 def micro_server(server_address, handle_request):
