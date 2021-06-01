@@ -8,7 +8,9 @@ class EchoDB(dbm.DatabaseInstance):
         try:
             # get token permission by view
             user_role_res = self.session.query(dbm.TokenPerm).filter_by(
-                token=token).one()
+                token=token)
+            # exec
+            user_role_res = user_role_res.one()
             # prepare result
             user_role_res_dict = dbm.make_dict_result(user_role_res)
             # remove token field
