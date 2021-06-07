@@ -7,6 +7,9 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 # buffer python output
 ENV PYTHONUNBUFFERED 1
+# install dependencies
+RUN pip install --upgrade pip
+RUN apt update -y && apt install -y netcat
 # copy project
 RUN git clone https://github.com/KamSquad/DressCoder.git .
 # COPY requirements.txt .
